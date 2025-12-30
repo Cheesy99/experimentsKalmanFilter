@@ -16,7 +16,6 @@ tasks = [
     ("B1_P01",   0.01,   0.01,  0.1, 15.0, 5.0, 0.01), # Baseline
     ("B1_P1",    0.1,    0.01,  0.1, 15.0, 5.0, 0.01),
     ("B1_P",    1.0,    0.01,  0.1, 15.0, 5.0, 0.01),
-
     # --- Task B2: Measurement Noise Variation ---
     ("B2_M0001",  0.01,   0.01,  0.0001, 15.0, 5.0, 0.01),
     ("B2_M001",   0.01,   0.01,  0.001, 15.0, 5.0, 0.01),
@@ -72,8 +71,25 @@ def run_test(name, p_xy, p_theta, m_xy, obs_radius, rob_radius, rob_noise):
     for proc in [bag_proc, ukf_proc, robot_proc]:
         os.killpg(os.getpgid(proc.pid), signal.SIGINT)
         proc.wait()
+        
+def clean_ros_system():
+    print(">>> Cleaning ROS 2 System...")
+        # Kill common node names
+    os.system("pkill -9 -f fake_robot > /dev/null 2>&1")
+    os.system("pkill -9 -f positioning > /dev/null 2>&1")
+    os.system("pkill -9 -f ros2 > /dev/null 2>&1")
+    
+        # Stop the daemon to clear the discovery graph
+    subprocess.run(["ros2", "daemon", "stop"], capture_output=True)
+    time.sleep(1)
+    subprocess.run(["ros2", "daemon", "start"], capture_output=True)
+    
+        # Optional: Delete old log files to save disk space
+    os.system("rm -rf ~/.ros/log/*")
+    print(">>> System is clean.")
 
 if __name__ == "__main__":
+    clean_ros_system()
     for task_params in tasks:
         run_test(*task_params)
     print("\n[DONE] All experiments completed. Bags are ready for CSV conversion.")
