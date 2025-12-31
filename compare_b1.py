@@ -148,7 +148,7 @@ for i, folder in enumerate(b1_folders):
 plt.title("Task B1: Localization Error Over Time (Euclidean)")
 plt.xlabel("Time [s]")
 plt.ylabel("Euclidean Error [m]")
-plt.xlim(0, 60)
+plt.xlim(0, 120)
 plt.ylim(0, 2)
 plt.grid(True, alpha=0.3)
 plt.legend()
