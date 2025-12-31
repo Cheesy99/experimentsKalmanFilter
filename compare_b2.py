@@ -112,26 +112,26 @@ df = pd.DataFrame(summary)
 df.to_csv("B2_Summary.csv", index=False)
 print("Saved: B2_Summary.csv")
 
-# --- 2. RMSE TREND PLOT WITH ARROW ---
+# --- 2. RMSE TREND PLOT (MATCH B1 STYLE) ---
 plt.figure(figsize=(10, 6))
-plt.plot(noise_values, rmse_values, marker='s', markersize=10, linewidth=2.5, color='#1f77b4', label='RMSE Performance')
-
+plt.plot(noise_values, rmse_values, 'o-', color='blue', linewidth=2, markersize=10)
 plt.xscale('log')
-plt.title("Task B2: RMSE vs. Measurement Noise (R)", fontsize=14, fontweight='bold')
-plt.xlabel("Measurement Noise Covariance R (Log Scale)", fontsize=12)
-plt.ylabel("RMSE (meters)", fontsize=12)
+plt.title("Task B2: RMSE vs. Measurement Noise (R)")
+plt.xlabel("Measurement Noise Covariance R (Log Scale)")
+plt.ylabel("RMSE [meters]")
 plt.grid(True, which="both", linestyle='--', alpha=0.5)
 
-# FIND AND ANNOTATE OPTIMAL POINT
+# Highlight optimal point
 min_rmse = min(rmse_values)
 min_idx = rmse_values.index(min_rmse)
 opt_r = noise_values[min_idx]
-
-plt.annotate(f'Optimal R: {opt_r}\nRMSE: {min_rmse:.4f}m', 
-             xy=(opt_r, min_rmse), 
-             xytext=(opt_r * 2.5, min_rmse + 0.02),
-             arrowprops=dict(facecolor='black', width=2, headwidth=10),
-             fontsize=11, fontweight='bold', bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="black", alpha=0.8))
+plt.scatter([opt_r], [min_rmse], s=140, color='black', zorder=5)
+plt.annotate(f'Optimal R={opt_r}\nRMSE={min_rmse:.4f} m',
+             xy=(opt_r, min_rmse),
+             xytext=(opt_r * 1.4, min_rmse + 0.06),
+             textcoords='data',
+             arrowprops=dict(arrowstyle='->', color='black', lw=2),
+             bbox=dict(boxstyle='round,pad=0.3', fc='white', ec='black', alpha=0.9))
 
 plt.savefig("B2_RMSE_Trend.png", dpi=300, bbox_inches='tight')
 print("Finished! Check B2_Trajectories.png and B2_RMSE_Trend.png")
